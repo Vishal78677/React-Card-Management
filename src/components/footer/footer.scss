@@ -1,0 +1,12 @@
+@use '../../styles/variables' as *;
+
+
+
+.footer_main{
+ background-color:  $background-color-footer;
+
+ .footer_text{
+    color: $text-color-white;
+ }
+ 
+}

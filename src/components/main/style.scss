@@ -1,0 +1,49 @@
+@use '../../styles/variables' as *;
+
+.main_body_con{
+    background-color: $background-color;
+    box-shadow: 0px 0px 3px 0px #0000005C;
+}
+
+.add_card_btn{
+    background-color: $primary-color;
+
+    .add_card_span{
+        color: $text-color-white;
+    }
+}
+
+
+.active_saved_card_btn{
+    color: $primary-color;
+}
+
+.gd_card_btn{
+    color: $secondary-text-color;
+}
+
+.breadcrumbs_text{
+    color: $secondary-text-color;
+    font-weight: $font-weight-normal;
+}
+
+
+.transaction_dp_con{
+    background-color: $background-color-dropdown;
+
+    .arrowDown{
+         background-color:$background-color-dp-arrow ;
+    }
+
+    .dropdown_title{
+        color: $primary-text-color;
+    }
+}
+
+.transaction_list_wrapper{
+    background-color: $background-color;
+    border-bottom: 0.5px solid $primary-text-header;
+    border-left: 0.5px solid $primary-text-header;
+    border-right: 0.5px solid $primary-text-header;
+    border-width: thin;
+}

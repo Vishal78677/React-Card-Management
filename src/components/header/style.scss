@@ -1,0 +1,16 @@
+@use '../../styles/variables' as *;
+
+.main_header{
+    box-shadow: 0px 2px 5px 0px #68686899;
+    background-color: $background-color;
+}
+
+
+.header_menubar{
+    color: $primary-text-header;
+}
+
+
+.header_title{
+    color: $primary-text-header;
+}

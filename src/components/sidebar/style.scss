@@ -1,0 +1,11 @@
+@use '../../styles/variables' as *;
+
+
+.main_sidebar{
+   background-color: $secondary-color; 
+   
+   .footer_text{
+      color: $text-color-white;
+   }
+
+}

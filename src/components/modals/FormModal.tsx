@@ -12,10 +12,17 @@ import {
   maskCVV,
   maskExpiry,
 } from "../../utility/maskFunctions";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
+import { setIsModalOpen } from "../../store/slices/formModalSlice";
+import { setCards } from "../../store/slices/cardSlice";
+import toast from "react-hot-toast";
 
 const FormModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenCardType, setIsOpenCardType] = useState(false);
+  const { cards } = useSelector((state: RootState) => state.card);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch<AppDispatch>();
 
   const initialValues: FormInitialValues = {
     name: "",
@@ -36,7 +43,7 @@ const FormModal = () => {
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false);
+        setIsOpenCardType(false);
       }
     };
 
@@ -57,7 +64,10 @@ const FormModal = () => {
             >
               New Card
             </h2>
-            <button onClick={() => console.log("object")} className="">
+            <button
+              onClick={() => dispatch(setIsModalOpen(false))}
+              className=""
+            >
               <svg
                 className="form_modal_header_title w-[27px] h-[27px]  dark:text-white"
                 aria-hidden="true"
@@ -84,7 +94,59 @@ const FormModal = () => {
             initialValues={initialValues}
             validationSchema={formValidationSchema}
             onSubmit={(values) => {
-              console.log(values);
+              if (values.cardType === "Credit") {
+                if (values.setAsDefault) {
+                  const findDefaultCard = cards.find(
+                    (ele) =>
+                      ele.cardType === "Credit" && ele.setAsDefault === true
+                  );
+
+                  if (findDefaultCard) {
+                    toast.error(
+                      "The selected card type already have a default card.",
+                      { duration: 2000 }
+                    );
+                  } else {
+                    const id = Date.now();
+                    dispatch(setCards([{ id, ...values }]));
+                    dispatch(setIsModalOpen(false));
+                    toast.success("Card added successfully", {
+                      duration: 2000,
+                    });
+                  }
+                } else {
+                  const id = Date.now();
+                  dispatch(setCards([{ id, ...values }]));
+                  dispatch(setIsModalOpen(false));
+                  toast.success("Card added successfully", { duration: 2000 });
+                }
+              } else {
+                if (values.setAsDefault) {
+                  const findDefaultCard = cards.find(
+                    (ele) =>
+                      ele.cardType === "Debit" && ele.setAsDefault === true
+                  );
+
+                  if (findDefaultCard) {
+                    toast.error(
+                      "The selected card type already have a default card.",
+                      { duration: 2000 }
+                    );
+                  } else {
+                    const id = Date.now();
+                    dispatch(setCards([{ id, ...values }]));
+                    dispatch(setIsModalOpen(false));
+                    toast.success("Card added successfully", {
+                      duration: 2000,
+                    });
+                  }
+                } else {
+                  const id = Date.now();
+                  dispatch(setCards([{ id, ...values }]));
+                  dispatch(setIsModalOpen(false));
+                  toast.success("Card added successfully", { duration: 2000 });
+                }
+              }
             }}
           >
             {({
@@ -151,7 +213,7 @@ const FormModal = () => {
                       className={`form_modal_input w-full px-3 py-2 rounded  outline-none  focus:ring focus:ring-blue-100 bg-white cursor-pointer flex justify-between items-center ${
                         values.cardType ? "text-black" : "text-gray-400"
                       }`}
-                      onClick={() => setIsOpen(!isOpen)}
+                      onClick={() => setIsOpenCardType(!isOpenCardType)}
                     >
                       {values.cardType || "Select Card Type"}
                       <span className="ml-2">
@@ -164,7 +226,7 @@ const FormModal = () => {
                     </div>
 
                     {/* Dropdown Options */}
-                    {isOpen && (
+                    {isOpenCardType && (
                       <div>
                         <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-lg shadow-md mt-1 z-50">
                           <li className="px-3 py-2 text-gray-400 cursor-not-allowed">
@@ -177,7 +239,7 @@ const FormModal = () => {
                               onClick={() => {
                                 setTouched({ ...touched, cardType: true });
                                 setFieldValue("cardType", option);
-                                setIsOpen(false);
+                                setIsOpenCardType(false);
                               }}
                             >
                               {option}
@@ -324,7 +386,7 @@ const FormModal = () => {
                 <div className="form_modal_footer border-t-2 p-3">
                   <Container className="flex justify-end space-x-2">
                     <button
-                      onClick={() => console.log("object")}
+                      onClick={() => dispatch(setIsModalOpen(false))}
                       className={`footer_btn_cancel ${fontSize.sm} ${fontWeight.medium} px-4 py-2 border rounded`}
                     >
                       Cancel

@@ -47,3 +47,73 @@
     border-right: 0.5px solid $primary-text-header;
     border-width: thin;
 }
+
+
+.card_header_wrapper{
+
+    .card_header_title{
+      
+        color: $primary-text-color;
+
+        .card_header_title_border{
+            background-color: $primary-color;
+            height: 0.05rem;
+        }
+    }
+    
+    .card_hide_show_btn{
+        
+        background-color: #0FA1DB30;
+        ;
+
+        .card_hide_show_btn_text{
+            color: $secondary-text-color;
+        }
+    }
+
+  
+}
+
+.main_card_wrapper{
+    background-color: $secondary-color;
+}
+
+
+
+
+// swiper css
+
+span.swiper-pagination-bullet-active {
+  @apply w-4  rounded-xl  !important;
+  background-color: $secondary-color !important;
+}
+
+span.swiper-pagination-bullet{
+    height: 6px;
+    width: 6px;
+    background-color: $secondary-color !important;
+    opacity: unset;
+}
+
+
+div.swiper-pagination{
+    position: static;
+}
+
+
+// card feature btn style
+
+.card_features_btn_wrapper{
+ 
+    background-color: $background-color-dp-arrow;
+
+
+    .action_card_icon{
+         background-color: $primary-color;
+
+         .action_card_icon_svg{
+            color: $text-color-white;
+         }
+    }
+    
+}

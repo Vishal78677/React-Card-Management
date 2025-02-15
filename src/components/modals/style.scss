@@ -1,0 +1,36 @@
+@use '../../styles/variables' as *;
+
+.form_modal_header{
+    box-shadow: 0px 2px 5px 0px #68686899;
+
+    .form_modal_header_title{
+       color: $secondary-text-color;
+    }
+}
+
+.form_modal_label{
+    color: $secondary-text-color ;
+}
+
+.form_modal_input{
+    border: 1px solid $primary-text-header;
+    color: $secondary-text-color;
+}
+
+.form_modal_checkbox{
+    accent-color: $secondary-color;
+}
+
+.form_modal_footer{
+    border: 1px solid $primary-border-color;
+
+    .footer_btn_cancel{
+        background-color: $button-cancel-footer-background;
+        color: $secondary-text-color;
+    }
+
+    .footer_btn_submit{
+        background-color: $secondary-color;
+        color: $btn-text-color;
+    }
+}

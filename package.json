@@ -11,12 +11,15 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.1",
+    "card-validator": "^10.0.2",
+    "formik": "^2.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.28.1",
     "redux-persist": "^6.0.0",
-    "swiper": "^11.2.3"
+    "swiper": "^11.2.3",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

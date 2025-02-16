@@ -3,6 +3,7 @@ import "./App.scss";
 import Header from "./components/header/Header";
 import Main from "./components/main/Main";
 import "swiper/swiper-bundle.css";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
@@ -17,6 +18,8 @@ function App() {
         isOpenSidebar={isOpenSidebar}
         handleCloseSidebar={handleCloseSidebar}
       />
+
+      <Toaster />
     </div>
   );
 }

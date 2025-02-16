@@ -1,24 +1,31 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import addIcon from "../../../public/assets/icons/add_icon.png";
 import eyeIcon from "../../../public/assets/icons/eye.png";
-import successIcon from "../../../public/assets/icons/success.png";
-import gpayIcon from "../../../public/assets/images/g_pay.png";
-import hdfcBankIcon from "../../../public/assets/images/hdfc_bank.png";
-import masterCardIcon from "../../../public/assets/images/master_card.png";
 import { bodyPaddingX, fontSize, fontWeight } from "../../constants/constant";
 import {
   actionCardData1,
   actionCardData2,
   dropdownCardData,
 } from "../../dummy_data/dummyData";
+import { setIsModalOpen } from "../../store/slices/formModalSlice";
+import { AppDispatch, RootState } from "../../store/store";
+import ActionCard1 from "../ActionCard1";
+import ActionCard2 from "../ActionCard2";
+import Card from "../card/Card";
 import Container from "../Container";
 import DropDownCard from "../dropDownCard/DropDownCard";
 import Footer from "../footer/Footer";
+import FormModal from "../modals/FormModal";
 import SideBar from "../sidebar/SideBar";
 import "./style.scss";
-import ActionCard1 from "../ActionCard1";
-import ActionCard2 from "../ActionCard2";
+import {
+  setCurrentCreditCard,
+  setCurrentDebitCard,
+} from "../../store/slices/cardSlice";
+import { CardType } from "../../types/types";
 
 interface MainProps {
   isOpenSidebar: boolean;
@@ -26,6 +33,48 @@ interface MainProps {
 }
 
 const Main = ({ isOpenSidebar, handleCloseSidebar }: MainProps) => {
+  const [isCreditNumberShow, setIsCreditNumberShow] = useState(false);
+  const [isDebitNumberShow, setIsDebitNumberShow] = useState(false);
+
+  const { isModalOpen } = useSelector((state: RootState) => state.form);
+  const { cards } = useSelector((state: RootState) => state.card);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const toggleCreditNumber = () => {
+    setIsCreditNumberShow(!isCreditNumberShow);
+  };
+  const toggleDebitNumber = () => {
+    setIsDebitNumberShow(!isDebitNumberShow);
+  };
+
+  useEffect(() => {
+    if (cards?.length) {
+      const firstCreditCard = cards.find(
+        (ele) => ele.cardType === "Credit"
+      ) as CardType;
+
+      dispatch(
+        setCurrentCreditCard({
+          id: firstCreditCard?.id,
+          action: firstCreditCard?.action,
+          cardType: firstCreditCard?.cardType,
+        })
+      );
+
+      const firstDebitCard = cards.find(
+        (ele) => ele.cardType === "Debit"
+      ) as CardType;
+
+      dispatch(
+        setCurrentDebitCard({
+          id: firstDebitCard?.id,
+          action: firstDebitCard?.action,
+          cardType: firstDebitCard?.cardType,
+        })
+      );
+    }
+  }, []);
+
   return (
     <div>
       <SideBar isOpen={isOpenSidebar} toggleSidebar={handleCloseSidebar} />
@@ -85,6 +134,7 @@ const Main = ({ isOpenSidebar, handleCloseSidebar }: MainProps) => {
                 </button>
               </div>
               <button
+                onClick={() => dispatch(setIsModalOpen(true))}
                 className={`add_card_btn flex items-center gap-3 w-24 h-6 px-2 ${fontSize.default} ${fontSize.sm} `}
               >
                 <img
@@ -117,12 +167,17 @@ const Main = ({ isOpenSidebar, handleCloseSidebar }: MainProps) => {
                     Credit cards
                     <span className="card_header_title_border block w-20 mt-1"></span>
                   </h3>
-                  <button className="card_hide_show_btn flex p-1 items-center gap-2 justify-center">
+                  <button
+                    onClick={toggleCreditNumber}
+                    className="card_hide_show_btn flex p-1 items-center gap-2 justify-center"
+                  >
                     <img src={eyeIcon} className="w-3 h-2" alt="eye_icon" />
                     <span
                       className={`card_hide_show_btn_text ${fontSize.default}`}
                     >
-                      Show Card Number
+                      {!isCreditNumberShow
+                        ? "Show Card Number"
+                        : "Hide Card Number"}
                     </span>
                   </button>
                 </div>
@@ -132,142 +187,63 @@ const Main = ({ isOpenSidebar, handleCloseSidebar }: MainProps) => {
                     slidesPerView={1}
                     modules={[Pagination]}
                     pagination={{ clickable: false }}
-                    onSlideChange={() => console.log("slide change")}
+                    onTouchMove={() => {
+                      setIsCreditNumberShow(false);
+                    }}
+                    onSlideChange={(swiper) => {
+                      const newIndex = swiper.activeIndex;
+                      const findCard = cards.filter(
+                        (ele) => ele.cardType === "Credit"
+                      )[newIndex];
+                      dispatch(
+                        setCurrentCreditCard({
+                          id: findCard?.id,
+                          cardType: findCard?.cardType,
+                          action: findCard?.action,
+                        })
+                      );
+                      setIsCreditNumberShow(false);
+                    }}
                     onSwiper={(swiper) => console.log(swiper)}
                   >
-                    <SwiperSlide>
-                      <div className="main_card_wrapper w-full max-w-lg bg-blue-900 text-white p-6 rounded-xl shadow-lg relative">
-                        {/* Bank Logo */}
-                        <div className="absolute top-4 right-4 flex items-center">
-                          <img
-                            src={hdfcBankIcon}
-                            alt="HDFC Bank"
-                            className="h-4 w-24"
-                          />
-                        </div>
-
-                        {/* Cardholder Name */}
-                        <div className={`mt-6 ${fontSize.lg} font-semibold`}>
-                          John Watson
-                        </div>
-
-                        {/* Card Number */}
-                        <div
-                          className={`mt-2 flex justify-between items-center ${fontSize.xl} w-3/4 tracking-widest`}
-                        >
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span
-                            className={`${fontWeight.normal} ${fontSize.md}`}
-                          >
-                            9340
-                          </span>
-                        </div>
-
-                        {/* Card Details */}
-                        <div className="mt-4 w-3/4  flex justify-between items-center text-sm">
-                          <div>
-                            <span className={`${fontWeight.bold}`}>
-                              Valid Till :
-                            </span>{" "}
-                            <span className={`ml-1 ${fontWeight.normal}`}>
-                              12/24
-                            </span>
-                          </div>
-                          <div className="flex gap-3 items-center">
-                            <span className="font-semibold">CVV :</span>
-                            <span
-                              className={`${fontWeight.bold} ${fontSize.xl} tracking-widest`}
-                            >
-                              •••
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Mastercard Logo */}
-                        <div className="absolute bottom-7 right-4">
-                          <img
-                            src={masterCardIcon}
-                            alt="Mastercard"
-                            className="h-10 w-16"
-                          />
-                        </div>
-                      </div>
-                    </SwiperSlide>
-
-                    <SwiperSlide>
-                      <div className="main_card_wrapper w-full max-w-lg bg-blue-900 text-white p-6 rounded-xl shadow-lg relative">
-                        {/* Bank Logo */}
-                        <div className="absolute top-4 right-4 flex items-center">
-                          <img
-                            src={hdfcBankIcon}
-                            alt="HDFC Bank"
-                            className="h-4 w-24"
-                          />
-                        </div>
-
-                        {/* Cardholder Name */}
-                        <div className={`mt-6 ${fontSize.lg} font-semibold`}>
-                          John Watson
-                        </div>
-
-                        {/* Card Number */}
-                        <div
-                          className={`mt-2 flex justify-between items-center ${fontSize.xl} w-3/4 tracking-widest`}
-                        >
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span
-                            className={`${fontWeight.normal} ${fontSize.md}`}
-                          >
-                            9340
-                          </span>
-                        </div>
-
-                        {/* Card Details */}
-                        <div className="mt-4 w-3/4  flex justify-between items-center text-sm">
-                          <div>
-                            <span className={`${fontWeight.bold}`}>
-                              Valid Till :
-                            </span>{" "}
-                            <span className={`ml-1 ${fontWeight.normal}`}>
-                              12/24
-                            </span>
-                          </div>
-                          <div className="flex items-center">
-                            <span className="font-semibold">CVV :</span>
-                            <span
-                              className={`${fontWeight.bold} ${fontSize.xl} tracking-widest`}
-                            >
-                              •••
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Mastercard Logo */}
-                        <div className="absolute bottom-7 right-4">
-                          <img
-                            src={masterCardIcon}
-                            alt="Mastercard"
-                            className="h-10 w-16"
-                          />
-                        </div>
-                      </div>
-                    </SwiperSlide>
+                    {cards.length
+                      ? cards
+                          .filter((ele) => ele.cardType === "Credit")
+                          .map((card) => {
+                            return (
+                              <SwiperSlide key={card.id}>
+                                <Card
+                                  data={card}
+                                  isNumberShow={isCreditNumberShow}
+                                />
+                              </SwiperSlide>
+                            );
+                          })
+                      : ""}
                   </Swiper>
 
                   <div className="flex flex-col gap-3 rounded card_features_btn_wrapper p-6">
                     <div className="flex justify-between">
                       {actionCardData1.map((item) => {
-                        return <ActionCard1 data={item} key={item.id} />;
+                        return (
+                          <ActionCard1
+                            data={item}
+                            key={item.id}
+                            from="credit"
+                          />
+                        );
                       })}
                     </div>
 
                     <div className="flex  justify-between">
                       {actionCardData2.map((item) => {
-                        return <ActionCard2 data={item} key={item.id} />;
+                        return (
+                          <ActionCard2
+                            data={item}
+                            key={item.id}
+                            from="credit"
+                          />
+                        );
                       })}
                     </div>
                   </div>
@@ -283,12 +259,17 @@ const Main = ({ isOpenSidebar, handleCloseSidebar }: MainProps) => {
                     Debit cards
                     <span className="card_header_title_border block w-20 mt-1"></span>
                   </h3>
-                  <button className="card_hide_show_btn flex p-1 items-center gap-2 justify-center">
+                  <button
+                    onClick={toggleDebitNumber}
+                    className="card_hide_show_btn flex p-1 items-center gap-2 justify-center"
+                  >
                     <img src={eyeIcon} className="w-3 h-2" alt="eye_icon" />
                     <span
                       className={`card_hide_show_btn_text ${fontSize.default}`}
                     >
-                      Show Card Number
+                      {!isDebitNumberShow
+                        ? "Show Card Number"
+                        : "Hide Card Number"}
                     </span>
                   </button>
                 </div>
@@ -298,200 +279,59 @@ const Main = ({ isOpenSidebar, handleCloseSidebar }: MainProps) => {
                     slidesPerView={1}
                     modules={[Pagination]}
                     pagination={{ clickable: false }}
-                    onSlideChange={() => console.log("slide change")}
+                    onSlideChange={(swiper) => {
+                      const newIndex = swiper.activeIndex;
+                      const findCard = cards.filter(
+                        (ele) => ele.cardType === "Debit"
+                      )[newIndex];
+                      dispatch(
+                        setCurrentDebitCard({
+                          id: findCard?.id,
+                          cardType: findCard?.cardType,
+                          action: findCard?.action,
+                        })
+                      );
+                      setIsDebitNumberShow(false);
+                    }}
                     onSwiper={(swiper) => console.log(swiper)}
                   >
-                    <SwiperSlide>
-                      <div className="main_card_wrapper w-full max-w-lg bg-blue-900 text-white p-6 rounded-xl shadow-lg relative">
-                        {/* Bank Logo */}
-                        <div className="absolute top-4 right-4 flex items-center">
-                          <img
-                            src={hdfcBankIcon}
-                            alt="HDFC Bank"
-                            className="h-4 w-24"
-                          />
-                        </div>
-
-                        {/* Cardholder Name */}
-                        <div className={`mt-6 ${fontSize.lg} font-semibold`}>
-                          John Watson
-                        </div>
-
-                        {/* Card Number */}
-                        <div
-                          className={`mt-2 flex justify-between items-center ${fontSize.xl} w-3/4 tracking-widest`}
-                        >
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span
-                            className={`${fontWeight.normal} ${fontSize.md}`}
-                          >
-                            9340
-                          </span>
-                        </div>
-
-                        {/* Card Details */}
-                        <div className="mt-4 w-3/4  flex justify-between items-center text-sm">
-                          <div>
-                            <span className={`${fontWeight.bold}`}>
-                              Valid Till :
-                            </span>{" "}
-                            <span className={`ml-1 ${fontWeight.normal}`}>
-                              12/24
-                            </span>
-                          </div>
-                          <div className="flex items-center">
-                            <span className="font-semibold">CVV :</span>
-                            <span
-                              className={`${fontWeight.bold} ${fontSize.xl} tracking-widest`}
-                            >
-                              •••
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Mastercard Logo */}
-                        <div className="absolute bottom-7 right-4">
-                          <img
-                            src={masterCardIcon}
-                            alt="Mastercard"
-                            className="h-10 w-16"
-                          />
-                        </div>
-                      </div>
-                    </SwiperSlide>
-                    <SwiperSlide>
-                      <div className="main_card_wrapper w-full max-w-lg bg-blue-900 text-white p-6 rounded-xl shadow-lg relative">
-                        {/* Bank Logo */}
-                        <div className="absolute top-4 right-4 flex items-center">
-                          <img
-                            src={hdfcBankIcon}
-                            alt="HDFC Bank"
-                            className="h-4 w-24"
-                          />
-                        </div>
-
-                        {/* Cardholder Name */}
-                        <div className={`mt-6 ${fontSize.lg} font-semibold`}>
-                          John Watson
-                        </div>
-
-                        {/* Card Number */}
-                        <div
-                          className={`mt-2 flex justify-between items-center ${fontSize.xl} w-3/4 tracking-widest`}
-                        >
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span
-                            className={`${fontWeight.normal} ${fontSize.md}`}
-                          >
-                            9340
-                          </span>
-                        </div>
-
-                        {/* Card Details */}
-                        <div className="mt-4 w-3/4  flex justify-between items-center text-sm">
-                          <div>
-                            <span className={`${fontWeight.bold}`}>
-                              Valid Till :
-                            </span>{" "}
-                            <span className={`ml-1 ${fontWeight.normal}`}>
-                              12/24
-                            </span>
-                          </div>
-                          <div className="flex items-center">
-                            <span className="font-semibold">CVV :</span>
-                            <span
-                              className={`${fontWeight.bold} ${fontSize.xl} tracking-widest`}
-                            >
-                              •••
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Mastercard Logo */}
-                        <div className="absolute bottom-7 right-4">
-                          <img
-                            src={masterCardIcon}
-                            alt="Mastercard"
-                            className="h-10 w-16"
-                          />
-                        </div>
-                      </div>
-                    </SwiperSlide>
-                    <SwiperSlide>
-                      <div className="main_card_wrapper w-full max-w-lg bg-blue-900 text-white p-6 rounded-xl shadow-lg relative">
-                        {/* Bank Logo */}
-                        <div className="absolute top-4 right-4 flex items-center">
-                          <img
-                            src={hdfcBankIcon}
-                            alt="HDFC Bank"
-                            className="h-4 w-24"
-                          />
-                        </div>
-
-                        {/* Cardholder Name */}
-                        <div className={`mt-6 ${fontSize.lg} font-semibold`}>
-                          John Watson
-                        </div>
-
-                        {/* Card Number */}
-                        <div
-                          className={`mt-2 flex justify-between items-center ${fontSize.xl} w-3/4 tracking-widest`}
-                        >
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span className={`${fontWeight.bold}`}>••••</span>{" "}
-                          <span
-                            className={`${fontWeight.normal} ${fontSize.md}`}
-                          >
-                            9340
-                          </span>
-                        </div>
-
-                        {/* Card Details */}
-                        <div className="mt-4 w-3/4  flex justify-between items-center text-sm">
-                          <div>
-                            <span className={`${fontWeight.bold}`}>
-                              Valid Till :
-                            </span>{" "}
-                            <span className={`ml-1 ${fontWeight.normal}`}>
-                              12/24
-                            </span>
-                          </div>
-                          <div className="flex items-center">
-                            <span className="font-semibold">CVV :</span>
-                            <span
-                              className={`${fontWeight.bold} ${fontSize.xl} tracking-widest`}
-                            >
-                              •••
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Mastercard Logo */}
-                        <div className="absolute bottom-7 right-4">
-                          <img
-                            src={masterCardIcon}
-                            alt="Mastercard"
-                            className="h-10 w-16"
-                          />
-                        </div>
-                      </div>
-                    </SwiperSlide>
+                    {cards.length
+                      ? cards
+                          .filter((ele) => ele.cardType === "Debit")
+                          .map((card) => {
+                            return (
+                              <SwiperSlide key={card.id}>
+                                <Card
+                                  data={card}
+                                  isNumberShow={isDebitNumberShow}
+                                />
+                              </SwiperSlide>
+                            );
+                          })
+                      : ""}
 
                     <div className="flex flex-col gap-3 rounded card_features_btn_wrapper p-6">
                       <div className="flex justify-between">
                         {actionCardData1.map((item) => {
-                          return <ActionCard1 data={item} key={item.id} />;
+                          return (
+                            <ActionCard1
+                              data={item}
+                              key={item.id}
+                              from="debit"
+                            />
+                          );
                         })}
                       </div>
 
                       <div className="flex  justify-between">
                         {actionCardData2.map((item) => {
-                          return <ActionCard2 data={item} key={item.id} />;
+                          return (
+                            <ActionCard2
+                              data={item}
+                              key={item.id}
+                              from="debit"
+                            />
+                          );
                         })}
                       </div>
                     </div>
@@ -502,6 +342,11 @@ const Main = ({ isOpenSidebar, handleCloseSidebar }: MainProps) => {
           </Container>
         </div>
 
+        {/* modal */}
+
+        {isModalOpen && <FormModal />}
+
+        {/* footer */}
         <Footer />
       </div>
     </div>

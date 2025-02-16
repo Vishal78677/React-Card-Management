@@ -1,7 +1,18 @@
 import hdfcBankIcon from "../../../public/assets/images/hdfc_bank.png";
 import masterCardIcon from "../../../public/assets/images/master_card.png";
-import { fontSize, fontWeight } from "../../constants/constant";
+import {
+  ADD_GPAY,
+  ARCHIVE,
+  fontSize,
+  fontWeight,
+  LOCK_CARD,
+  SET_DEFAULT,
+} from "../../constants/constant";
 import { CardType } from "../../types/types";
+import lockIcon from "../../../public/assets/icons/lock.png";
+import archiveIcon from "../../../public/assets/icons/archive.png";
+import successIcon from "../../../public/assets/icons/success.png";
+import gPayIcon from "../../../public/assets/images/g_pay2.png";
 
 interface CardProps {
   data: CardType;
@@ -9,8 +20,59 @@ interface CardProps {
 }
 
 const Card = ({ data, isNumberShow }: CardProps) => {
+  const actionIcon = () => {
+    switch (data.action) {
+      case LOCK_CARD:
+        return lockIcon;
+
+      case ARCHIVE:
+        return archiveIcon;
+
+      case SET_DEFAULT:
+        return successIcon;
+
+      case ADD_GPAY:
+        return gPayIcon;
+
+      default:
+        return "";
+    }
+  };
+
+  const bgColorOfAction = () => {
+    switch (data.action) {
+      case LOCK_CARD:
+        return "card_bg_lock";
+
+      case ARCHIVE:
+        return "card_bg_archive";
+
+      case SET_DEFAULT:
+        return "card_bg_default";
+
+      case ADD_GPAY:
+        return "card_bg_gPay";
+
+      default:
+        return "card_bg_normal";
+    }
+  };
+
   return (
-    <div className="main_card_wrapper w-full max-w-lg bg-blue-900 text-white p-6 rounded-xl shadow-lg relative">
+    <div
+      className={`${bgColorOfAction()} w-full max-w-lg text-white p-6 rounded-xl shadow-lg relative`}
+    >
+      {/* action icon */}
+
+      {actionIcon() && (
+        <div className="absolute top-4">
+          <img
+            src={actionIcon()}
+            className={` ${data.action === ADD_GPAY ? "h-4 w-6" : "h-4 w-4"}`}
+          />
+        </div>
+      )}
+
       {/* Bank Logo */}
       <div className="absolute top-4 right-4 flex items-center">
         <img src={hdfcBankIcon} alt="HDFC Bank" className="h-4 w-24" />

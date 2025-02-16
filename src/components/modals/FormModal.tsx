@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { fontSize, fontWeight } from "../../constants/constant";
+import { fontSize, fontWeight, SET_DEFAULT } from "../../constants/constant";
 import Container from "../Container";
 import "./style.scss";
 import calendarIcon from "../../../public/assets/icons/calander.png";
@@ -15,7 +15,11 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { setIsModalOpen } from "../../store/slices/formModalSlice";
-import { setCards } from "../../store/slices/cardSlice";
+import {
+  setCards,
+  setCurrentCreditCard,
+  setCurrentDebitCard,
+} from "../../store/slices/cardSlice";
 import toast from "react-hot-toast";
 
 const FormModal = () => {
@@ -108,7 +112,25 @@ const FormModal = () => {
                     );
                   } else {
                     const id = Date.now();
-                    dispatch(setCards([{ id, ...values }]));
+
+                    dispatch(
+                      setCurrentCreditCard({
+                        id,
+                        action: SET_DEFAULT,
+                        cardType: values.cardType,
+                      })
+                    );
+
+                    dispatch(
+                      setCards([
+                        {
+                          id,
+                          ...values,
+                          setAsDefault: true,
+                          action: SET_DEFAULT,
+                        },
+                      ])
+                    );
                     dispatch(setIsModalOpen(false));
                     toast.success("Card added successfully", {
                       duration: 2000,
@@ -116,7 +138,15 @@ const FormModal = () => {
                   }
                 } else {
                   const id = Date.now();
-                  dispatch(setCards([{ id, ...values }]));
+
+                  dispatch(
+                    setCurrentCreditCard({
+                      id,
+                      action: "",
+                      cardType: values.cardType,
+                    })
+                  );
+                  dispatch(setCards([{ id, action: "", ...values }]));
                   dispatch(setIsModalOpen(false));
                   toast.success("Card added successfully", { duration: 2000 });
                 }
@@ -134,7 +164,24 @@ const FormModal = () => {
                     );
                   } else {
                     const id = Date.now();
-                    dispatch(setCards([{ id, ...values }]));
+
+                    dispatch(
+                      setCurrentDebitCard({
+                        id,
+                        action: SET_DEFAULT,
+                        cardType: values.cardType,
+                      })
+                    );
+                    dispatch(
+                      setCards([
+                        {
+                          id,
+                          ...values,
+                          action: SET_DEFAULT,
+                          setAsDefault: true,
+                        },
+                      ])
+                    );
                     dispatch(setIsModalOpen(false));
                     toast.success("Card added successfully", {
                       duration: 2000,
@@ -142,7 +189,14 @@ const FormModal = () => {
                   }
                 } else {
                   const id = Date.now();
-                  dispatch(setCards([{ id, ...values }]));
+                  dispatch(
+                    setCurrentDebitCard({
+                      id,
+                      action: "",
+                      cardType: values.cardType,
+                    })
+                  );
+                  dispatch(setCards([{ id, action: "", ...values }]));
                   dispatch(setIsModalOpen(false));
                   toast.success("Card added successfully", { duration: 2000 });
                 }

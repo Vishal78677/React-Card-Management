@@ -1,4 +1,9 @@
 
+export const SET_DEFAULT = "SET_DEFAULT";
+export const LOCK_CARD = "LOCK_CARD";
+export const ARCHIVE = "ARCHIVE";
+export const ADD_GPAY = "ADD_GPAY";
+
 
 
 export const headerHeight = {
@@ -16,6 +21,15 @@ export const footerHeight = {
     md: 'md:h-16',
     lg: 'lg:h-20',
     xl: 'xl:h-24'
+}
+
+
+export const footerText = {
+    default: "text-xs",
+    sm: "text-xs",
+    md: "text-sm",
+    lg: "text-base",
+    xl: "text-xl "
 }
 
 export const marginX = {

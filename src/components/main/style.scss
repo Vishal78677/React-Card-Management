@@ -74,10 +74,25 @@
   
 }
 
-.main_card_wrapper{
+.card_bg_normal{
     background-color: $secondary-color;
 }
 
+.card_bg_lock {
+    background-color: $background-color-footer;
+}
+
+.card_bg_default {
+   background-color:  $primary-color;
+}
+
+.card_bg_gPay{
+    background-color: $background-color-card-gpay;
+}
+
+.card_bg_archive {
+    background-color:  $background-color-footer
+}
 
 
 
@@ -114,6 +129,11 @@ div.swiper-pagination{
          .action_card_icon_svg{
             color: $text-color-white;
          }
-    }
+
+        }
+        
+        .active_action_btn{
+           background-color: $secondary-color;
+        }
     
 }

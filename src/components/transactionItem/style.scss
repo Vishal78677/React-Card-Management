@@ -1,0 +1,25 @@
+
+@use '../../styles/variables' as *;
+
+.transaction_wrapper{
+
+    .transaction_img{
+        background-color: $background-color-dp-arrow;
+    }
+    
+    .transaction_date{
+    
+        color: $primary-text-header;
+    }
+    
+    .transaction_desc{
+        color: $primary-text-color;
+    }
+    
+    .transaction_col_debited{
+       color: $transaction-color-danger;
+    }
+    .transaction_col_credited {
+        color: $transaction-color-success;
+    }
+}

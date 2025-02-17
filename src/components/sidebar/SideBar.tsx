@@ -26,7 +26,7 @@ const SideBar = ({ isOpen, toggleSidebar }: SideBarProps) => {
       ></div>
 
       <div
-        className={`main_sidebar fixed left-0 top-0 z-50 w-8/12 h-full text-white  transform transition-all duration-300 ${
+        className={`main_sidebar fixed left-0 top-0 z-50 w-9/12 h-full text-white  transform transition-all duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:static lg:block lg:w-64`}
       >
